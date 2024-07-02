@@ -190,20 +190,19 @@ iterations = args.iterations
 host = args.host
 port = args.port
 
-print('Available freqs for big cluster:', get_avail_freqs(4))
-print('Available freqs for LITTLE cluster:', get_avail_freqs(0))
-set_user_space()
-
-set_cluster_freq(4, 2000000)   # big cluster --> 2 GHz
-set_cluster_freq(0, 200000)    # little cluster --> 0.2 GHz
-
-# print current freq for the little cluster and big cluster
-print('Current freq for big cluster:', get_cluster_freq(4))
-print('Current freq for little cluster:', get_cluster_freq(0))
-
 
 
 for i in range(iterations):
+        print('Available freqs for big cluster:', get_avail_freqs(4))
+        print('Available freqs for LITTLE cluster:', get_avail_freqs(0))
+        set_user_space()
+
+        set_cluster_freq(4, 2000000)   # big cluster --> 2 GHz
+        set_cluster_freq(0, 200000)    # little cluster --> 0.2 GHz
+
+        # print current freq for the little cluster and big cluster
+        print('Current freq for big cluster:', get_cluster_freq(4))
+        print('Current freq for little cluster:', get_cluster_freq(0))
         out_fname = f'{logname_base}_{i}_{benchmark.replace("/", "_")}.txt'
         print(f"Starting iteration {i} of {iterations}, logging to {out_fname}")
 
@@ -225,7 +224,7 @@ for i in range(iterations):
         # run the benchmark
         start = time.time()
         if benchmark == "tp":  # TPBench
-            command = "taskset --all-tasks 0xF0 /home/student/HW2_files/TPBench.exe"  # 0x10: core 4 (7 6 5 4 3 2 1 0)
+            command = "taskset --all-tasks 0x10 /home/student/HW2_files/TPBench.exe"  # 0x10: core 4 (7 6 5 4 3 2 1 0)
         
         elif benchmark == "bs":  # blackscholes
             command = "taskset --all-tasks 0xF0 /home/student/HW2_files/parsec_files/blackscholes 4 /home/student/HW2_files/parsec_files/in_10M_blackscholes.txt out"  # 0xF0: cores 7654, 4 threads
@@ -261,7 +260,9 @@ for i in range(iterations):
         # Close the socket
         soc.close()
         print("-" * 50)
-        print("Data Processing done")
+        print(f"Waiting 2 minutes for devices to cool down...")
+        time.sleep(120) # Wait for 2 minutes for devices to cool down
+        print(f"Data Processing done")
 
 print("All iterations completed.")
 

@@ -15,7 +15,7 @@ def convert_txt_to_csv(input_file, output_file):
             outfile.write(csv_line)
 
 
-def process_benchmark_results(log_filename_base, iterations, output_csv_filename):
+def process_benchmark_results_tp(log_filename_base, iterations, output_csv_filename):
     # Function to parse the log file and extract benchmarking data
     def parse_log_file(filename):
         operations_data = defaultdict(lambda: {
@@ -324,7 +324,12 @@ pd.DataFrame(results).to_csv(output_csv_file, index=False)
 
 log_filename = 'results.txt'  # Replace with your actual log file name
 output_csv_filename = 'benchmark_results.csv'
-process_benchmark_results(log_filename, iterations, output_csv_filename)
+if(benchmark == 'tp'):
+    process_benchmark_results_tp(log_filename, iterations, output_csv_filename)
+elif benchmark == "bs":  # blackscholes
+    print("Unknown benchmark specified.")        
+elif benchmark == "bt":  # bodytrack
+    print("Unknown benchmark specified.")
 concatenate_averages_to_all_results(output_csv_file, output_csv_filename, output_csv)
 organize_files(logname_base, device_number, benchmark, iterations, output_csv_file, output_csv_filename, output_csv)
 print(f"\nAll results written")
